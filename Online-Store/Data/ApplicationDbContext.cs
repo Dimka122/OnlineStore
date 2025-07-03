@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Online_Store.Models.Entities;
+using Online_Store.Models;
 
 namespace Online_Store.Data
 {
