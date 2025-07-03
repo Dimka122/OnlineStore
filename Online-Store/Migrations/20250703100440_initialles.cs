@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Online_Store.Migrations
 {
     /// <inheritdoc />
-    public partial class inita : Migration
+    public partial class initialles : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
