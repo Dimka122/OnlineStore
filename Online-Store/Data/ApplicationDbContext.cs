@@ -17,6 +17,7 @@ namespace Online_Store.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             // Здесь можно настроить отношения между таблицами
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Category)

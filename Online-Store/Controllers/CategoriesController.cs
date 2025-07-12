@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Online_Store.Data;
@@ -8,7 +9,7 @@ using Online_Store.Models.Entities;
 namespace Online_Store.Controllers
 {
     
-        [ApiController]
+    [ApiController]
         [Route("api/[controller]")]
         public class CategoriesController : ControllerBase
         {
@@ -69,9 +70,11 @@ namespace Online_Store.Controllers
                 return Ok(new ApiResponse<CategoryDetailsDTO>(result));
             }
 
-            // POST: api/Categories
-            [HttpPost]
-            public async Task<ActionResult<ApiResponse<CategoryDTO>>> CreateCategory(
+        // POST: api/Categories
+        
+        [HttpPost]
+        
+        public async Task<ActionResult<ApiResponse<CategoryDTO>>> CreateCategory(
                 [FromBody] CategoryCreateDTO categoryDto)
             {
                 if (!ModelState.IsValid)

@@ -120,7 +120,7 @@ namespace OnlineStore.Controllers
 
             return Ok(new ApiResponse("Товар успешно удален"));
         }
-[HttpPut("{id}")]
+        [HttpPut("{id}")]
         private async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductUpdateDTO productDto)
         {
             if (id != productDto.Id)

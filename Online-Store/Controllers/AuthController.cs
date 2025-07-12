@@ -12,13 +12,15 @@ namespace Online_Store.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly ITokenService _tokenService;
         private readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<User> userManager, ITokenService tokenService, IConfiguration configuration)
+        public AuthController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ITokenService tokenService, IConfiguration configuration)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _tokenService = tokenService;
             _configuration=configuration;
         }
@@ -73,8 +75,13 @@ namespace Online_Store.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            await _userManager.AddToRoleAsync(user, "User");
-            return Ok();
+            // Назначаем роль "User" только если она существует
+            if (await _roleManager.RoleExistsAsync("User"))
+            {
+                await _userManager.AddToRoleAsync(user, "User");
+            }
+
+            return Ok(new { Message = "User registered successfully" });
         }
     }
 }
