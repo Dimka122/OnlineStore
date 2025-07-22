@@ -26,15 +26,20 @@ namespace Online_Store.Data
             {
                 entity.HasKey(c => c.Id);
                 entity.HasMany(c => c.Items)
-                      .WithOne(i => i.Cart)
+                      .WithOne()
                       .HasForeignKey(i => i.CartId)
                       .OnDelete(DeleteBehavior.Cascade);
+                entity.Property(c => c.CreatedAt)
+              .HasDefaultValueSql("GETUTCDATE()");
             });
 
             modelBuilder.Entity<CartItem>(entity =>
             {
                 entity.HasKey(i => i.Id);
-                entity.Property(i => i.Id).ValueGeneratedOnAdd();
+                entity.HasOne<Product>()
+                      .WithMany()
+                      .HasForeignKey(i => i.ProductId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Product>()

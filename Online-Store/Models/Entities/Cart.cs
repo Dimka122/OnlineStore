@@ -12,5 +12,6 @@ namespace Online_Store.Models.Entities
 
         [NotMapped]
         public decimal TotalPrice => Items.Sum(i => i.Price * i.Quantity);
+        //public Cart Cart { get; set; }
     }
 }

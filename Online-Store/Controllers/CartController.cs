@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace Online_Store.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CartController : ControllerBase
@@ -52,21 +52,32 @@ namespace Online_Store.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> AddToCart([FromBody] CartItemDto itemDto)
         {
-            var cartId = GetCartId();
-            var cart = await _cartService.AddItemAsync(cartId, itemDto);
-
-            // Устанавливаем куки для анонимных пользователей
-            if (!_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            try
             {
-                _httpContextAccessor.HttpContext.Response.Cookies.Append("CartId", cartId, new CookieOptions
-                {
-                    Expires = DateTime.Now.AddDays(30),
-                    IsEssential = true
-                });
-            }
+                var cartId = GetCartId();
+                var cart = await _cartService.AddItemAsync(cartId, itemDto);
 
-            return Ok(cart);
+                if (!_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                {
+                    Response.Cookies.Append("CartId", cartId, new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddDays(30),
+                        IsEssential = true
+                    });
+                }
+
+                return Ok(cart);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+        
 
         [HttpDelete("remove/{productId}")]
         public async Task<IActionResult> RemoveFromCart(int productId)

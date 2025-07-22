@@ -26,9 +26,32 @@ namespace Online_Store.Services
 
         public async Task<Cart> AddItemAsync(string cartId, CartItemDto itemDto)
         {
-            var product = await _productService.GetProductByIdAsync(itemDto.ProductId);
-            var cart = await GetCartAsync(cartId);
 
+            
+
+            // 1. Получаем или создаем корзину
+            var cart = await _context.Carts
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.Id == cartId) ?? new Cart { Id = cartId };
+
+            if (cart == null)
+            {
+                cart = new Cart
+                {
+                    Id = cartId,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.Carts.Add(cart);
+                await _context.SaveChangesAsync(); // Сначала сохраняем корзину
+
+                
+
+            }
+
+            // 2. Проверяем товар
+            var product = await _productService.GetProductByIdAsync(itemDto.ProductId);
+
+            // 3. Добавляем/обновляем товар
             var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == itemDto.ProductId);
 
             if (existingItem != null)
@@ -44,22 +67,14 @@ namespace Online_Store.Services
                     Price = product.Price,
                     Quantity = itemDto.Quantity,
                     ImageUrl = product.ImageUrl,
-                    CartId = cartId
+                    CartId = cart.Id // Убедимся, что CartId установлен
                 });
             }
 
-            if (string.IsNullOrEmpty(cart.Id))
-            {
-                cart.Id = cartId;
-                _context.Carts.Add(cart);
-            }
-            else
-            {
-                _context.Carts.Update(cart);
-            }
-
+            cart.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
-            return cart;
+
+           return cart; 
         }
 
         public async Task<Cart> RemoveItemAsync(string cartId, int productId)

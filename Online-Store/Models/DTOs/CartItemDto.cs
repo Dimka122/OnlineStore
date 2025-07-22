@@ -4,10 +4,10 @@ namespace Online_Store.Models.DTOs
 {
     public class CartItemDto
     {
-        [Required]
         public int ProductId { get; set; }
-
-        [Range(1, 100)]
-        public int Quantity { get; set; } = 1;
+        public string ProductName { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public string ImageUrl { get; set; }
     }
 }
